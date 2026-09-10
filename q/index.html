@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecionando...</title>
+</head>
+<body>
+
+<p>Redirecionando...</p>
+
+<script>
+    const parametros = new URLSearchParams(window.location.search);
+    const id = parametros.get("id");
+
+    fetch("../links.json")
+        .then(resposta => resposta.json())
+        .then(links => {
+            const destino = links[id];
+
+            if (destino) {
+                window.location.href = destino;
+            } else {
+                document.body.innerHTML = "<h1>QR Code não encontrado</h1>";
+            }
+        })
+        .catch(() => {
+            document.body.innerHTML = "<h1>Erro ao carregar QR Code</h1>";
+        });
+</script>
+
+</body>
+</html>
