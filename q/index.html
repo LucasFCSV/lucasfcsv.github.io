@@ -12,7 +12,6 @@
     <title>QR Code</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -33,7 +32,6 @@
                 sans-serif;
 
             background: #f4f4f5;
-
             color: #18181b;
         }
 
@@ -70,16 +68,13 @@
             background: #f4f4f5;
 
             font-size: 24px;
-
             font-weight: bold;
-
             letter-spacing: 2px;
         }
 
         .texto {
             color: #71717a;
         }
-
     </style>
 
 </head>
@@ -90,9 +85,7 @@
     class="card"
     id="conteudo"
 >
-    <p>
-        Carregando...
-    </p>
+    <p>Carregando...</p>
 </div>
 
 
@@ -106,7 +99,6 @@ const parametros =
 const id =
     parametros.get("id");
 
-
 const conteudo =
     document.getElementById(
         "conteudo"
@@ -116,9 +108,7 @@ const conteudo =
 if (!id) {
 
     conteudo.innerHTML = `
-        <h1>
-            QR inválido
-        </h1>
+        <h1>QR inválido</h1>
 
         <p class="texto">
             Nenhum código foi informado.
@@ -143,9 +133,7 @@ if (!id) {
             if (!(id in links)) {
 
                 conteudo.innerHTML = `
-                    <h1>
-                        QR não encontrado
-                    </h1>
+                    <h1>QR não encontrado</h1>
 
                     <p class="texto">
                         Este código não existe.
@@ -156,10 +144,36 @@ if (!id) {
             }
 
 
-            const destino =
+            const registro =
                 links[id];
 
 
+            let destino = null;
+
+
+            // Formato novo
+            if (
+                registro &&
+                typeof registro === "object"
+            ) {
+
+                destino =
+                    registro.destino;
+
+            }
+
+            // Formato antigo
+            else if (
+                typeof registro === "string"
+            ) {
+
+                destino =
+                    registro;
+
+            }
+
+
+            // QR ainda sem destino
             if (
                 !destino ||
                 String(destino).trim() === ""
@@ -194,9 +208,7 @@ if (!id) {
         () => {
 
             conteudo.innerHTML = `
-                <h1>
-                    Erro
-                </h1>
+                <h1>Erro</h1>
 
                 <p class="texto">
                     Não foi possível carregar
