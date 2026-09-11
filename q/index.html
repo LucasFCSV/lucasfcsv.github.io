@@ -12,7 +12,7 @@
     const parametros = new URLSearchParams(window.location.search);
     const id = parametros.get("id");
 
-    fetch("../links.json")
+    fetch("../links.json?nocache=" + Date.now())
         .then(resposta => resposta.json())
         .then(links => {
             const destino = links[id];
