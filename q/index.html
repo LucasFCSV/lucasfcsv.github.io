@@ -1,32 +1,216 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <title>Redirecionando...</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>QR Code</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f4f5;
+
+            color: #18181b;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 430px;
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 16px;
+
+            text-align: center;
+
+            box-shadow:
+                0 4px 20px
+                rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .codigo {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding: 12px 18px;
+
+            border-radius: 9px;
+
+            background: #f4f4f5;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+        }
+
+        .texto {
+            color: #71717a;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<p>Redirecionando...</p>
+<div
+    class="card"
+    id="conteudo"
+>
+    <p>
+        Carregando...
+    </p>
+</div>
+
 
 <script>
-    const parametros = new URLSearchParams(window.location.search);
-    const id = parametros.get("id");
 
-    fetch("../links.json?nocache=" + Date.now())
-        .then(resposta => resposta.json())
-        .then(links => {
-            const destino = links[id];
+const parametros =
+    new URLSearchParams(
+        window.location.search
+    );
 
-            if (destino) {
-                window.location.href = destino;
-            } else {
-                document.body.innerHTML = "<h1>QR Code não encontrado</h1>";
+const id =
+    parametros.get("id");
+
+
+const conteudo =
+    document.getElementById(
+        "conteudo"
+    );
+
+
+if (!id) {
+
+    conteudo.innerHTML = `
+        <h1>
+            QR inválido
+        </h1>
+
+        <p class="texto">
+            Nenhum código foi informado.
+        </p>
+    `;
+
+} else {
+
+    fetch(
+        "../links.json?nocache=" +
+        Date.now()
+    )
+
+    .then(
+        resposta =>
+            resposta.json()
+    )
+
+    .then(
+        links => {
+
+            if (!(id in links)) {
+
+                conteudo.innerHTML = `
+                    <h1>
+                        QR não encontrado
+                    </h1>
+
+                    <p class="texto">
+                        Este código não existe.
+                    </p>
+                `;
+
+                return;
             }
-        })
-        .catch(() => {
-            document.body.innerHTML = "<h1>Erro ao carregar QR Code</h1>";
-        });
+
+
+            const destino =
+                links[id];
+
+
+            if (
+                !destino ||
+                String(destino).trim() === ""
+            ) {
+
+                conteudo.innerHTML = `
+                    <h1>
+                        QR não configurado
+                    </h1>
+
+                    <p class="texto">
+                        Código desta placa:
+                    </p>
+
+                    <div class="codigo">
+                        ${id}
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            window.location.replace(
+                destino
+            );
+
+        }
+    )
+
+    .catch(
+        () => {
+
+            conteudo.innerHTML = `
+                <h1>
+                    Erro
+                </h1>
+
+                <p class="texto">
+                    Não foi possível carregar
+                    este QR Code.
+                </p>
+            `;
+
+        }
+    );
+
+}
+
 </script>
 
 </body>
+
 </html>
